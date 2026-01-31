@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# --- KONFIGURASI ---
+# Path tempat file website berada (public_html atau folder project)
+TARGET="/home/u927936405/public_html/gcsbr" 
+
+# Path repo git yang barusan dibuat
+GIT_DIR="/home/u927936405/git/gcsbr.git"
+
+BRANCH="main"
+
+while read oldrev newrev ref
+do
+    # Hanya deploy kalau branch main
+    if [[ $ref =~ .*/$BRANCH$ ]];
+    then
+        echo "🚀 Deploying ${BRANCH} branch to production..."
+        
+        # 1. Copy file terbaru ke folder project
+        # mkdir -p $TARGET # Ensure target exists (optional logic, usually done by setup)
+        git --work-tree=$TARGET --git-dir=$GIT_DIR checkout -f $BRANCH
+        
+        # 2. Masuk ke folder project
+        cd $TARGET
+        
+        # 3. Jalankan command Laravel
+        echo "📦 Installing Dependencies (Skipped - assumed vendor exists or manual)..."
+        # export COMPOSER_HOME="$HOME/.config/composer"; /usr/bin/php8.2 /usr/local/bin/composer install --no-dev --optimize-autoloader
+        
+        echo "🔄 Migrating Database..."
+        php artisan migrate --force
+        
+        echo "🧹 Clearing Cache..."
+        php artisan optimize:clear
+        
+        echo "📍 Enriching SLS Data..."
+        php artisan app:enrich-sls
+        
+        echo "✅ Deployment Finished!"
+    else
+        echo "Ref $ref received. Doing nothing: only the ${BRANCH} branch may be deployed on this server."
+    fi
+done
