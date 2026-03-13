@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Update - Groundcheck App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="p-6 max-w-7xl mx-auto">
+        <div class="mb-6 flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+                    Bulk Update Koordinat</h1>
+                <p class="text-sm text-gray-500 mt-1">Alat khusus admin untuk mengupdate batch data unit yang belum
+                    di-groundcheck</p>
+            </div>
+            <div>
+                <a href="http://localhost:8001/units/rekap"
+                    class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg shadow-sm hover:bg-gray-200 transition-colors flex items-center gap-2">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Rekap
+                </a>
+            </div>
+        </div>
+
+        
+        
+        <!-- Filters -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex flex-col sm:flex-row gap-4 items-center">
+            <span class="font-semibold text-gray-700">Filter Data:</span>
+            <form action="http://localhost:8001/unit/bulk-update" method="GET" class="flex flex-1 gap-4 items-center">
+                <select name="filter_kec" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 w-48" onchange="this.form.submit()">
+                    <option value="">Semua Kecamatan</option>
+                                            <option value="10" >10</option>
+                                            <option value="10.0" >10.0</option>
+                                            <option value="11" >11</option>
+                                            <option value="11.0" >11.0</option>
+                                            <option value="20.0" >20.0</option>
+                                            <option value="20" >20</option>
+                                            <option value="30.0" >30.0</option>
+                                            <option value="30" >30</option>
+                                            <option value="40.0" >40.0</option>
+                                            <option value="40" >40</option>
+                                            <option value="41.0" >41.0</option>
+                                            <option value="41" >41</option>
+                                            <option value="42.0" >42.0</option>
+                                            <option value="42" >42</option>
+                                            <option value="50" >50</option>
+                                            <option value="50.0" >50.0</option>
+                                    </select>
+                <select name="filter_desa" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 w-48" onchange="this.form.submit()" disabled>
+                    <option value="">Semua Desa</option>
+                                    </select>
+                            </form>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Status Card -->
+            <div
+                class="md:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800 border-b pb-3 mb-4">Status Data Belum Terupdate</h3>
+
+                    <div class="grid grid-cols-3 gap-4 mb-4">
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-100 text-center">
+                            <div class="text-3xl font-bold text-blue-700 mb-1">
+                                8.025</div>
+                            <div class="text-xs text-blue-600 font-medium">Kecamatan & Desa<br>Diketahui</div>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-lg border border-amber-100 text-center">
+                            <div class="text-3xl font-bold text-amber-700 mb-1">
+                                391</div>
+                            <div class="text-xs text-amber-600 font-medium">Hanya Kecamatan<br>Diketahui</div>
+                        </div>
+                        <div class="bg-red-50 p-4 rounded-lg border border-red-100 text-center">
+                            <div class="text-3xl font-bold text-red-700 mb-1">
+                                508</div>
+                            <div class="text-xs text-red-600 font-medium">Tidak Diketahui<br>(Kec & Desa Kosong)</div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center bg-gray-50 p-4 rounded-lg border">
+                        <span class="font-medium text-gray-600">Total data siap diproses:</span>
+                        <span class="text-2xl font-bold text-gray-800">8.924
+                            Unit</span>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <form action="http://localhost:8001/unit/bulk-update/execute" method="POST" id="form-bulk-update">
+                        <input type="hidden" name="_token" value="MrCoT1s8PsPRzc0q4rInXw2aSo2bSPH5Gh8VopC2" autocomplete="off">                        <input type="hidden" name="filter_kec" value="">
+                        <input type="hidden" name="filter_desa" value="">
+
+                        <!-- Target Tagging -->
+                        <div class="mb-5 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                            <h4 class="text-sm font-semibold text-gray-700 mb-3"><i class="fas fa-map-marker-alt text-blue-500 mr-2"></i>Target Tagging (Opsional)</h4>
+                            <p class="text-xs text-gray-500 mb-3">Pilih target lokasi spesifik untuk menimpa asal wilayah unit. Biarkan default jika ingin diacak sesuai wilayah unit masing-masing.</p>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div>
+                                    <label class="block text-xs text-gray-600 mb-1">Target Kecamatan</label>
+                                    <select name="target_kec" id="target_kec" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500">
+                                        <option value="">-- Default Unit --</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-600 mb-1">Target Desa</label>
+                                    <select name="target_desa" id="target_desa" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500">
+                                        <option value="">-- Default Unit --</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-600 mb-1">Target SLS</label>
+                                    <select name="target_sls" id="target_sls" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500">
+                                        <option value="">-- Default (Acak) --</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="confirmBulkUpdate()"
+                            class="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg shadow-md hover:from-blue-700 hover:to-indigo-700 transition flex items-center justify-center gap-2 "
+                            >
+                            <i class="fas fa-play-circle text-lg"></i> Mulai Proses Bulk Update
+                        </button>
+                        <p class="text-xs text-center text-gray-500 mt-2">Semua data di atas akan otomatis diubah statusnya
+                            menjadi <b>Aktif</b> dan dicarikan koordinat random sesuai wilayahnya.</p>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Info Card -->
+            <div class="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-xl shadow-sm border border-indigo-100 p-6">
+                <h3 class="text-lg font-semibold text-indigo-800 border-b border-indigo-200 pb-3 mb-4">Mekanisme Update</h3>
+                <ul class="space-y-3 text-sm text-indigo-900">
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check-circle text-indigo-500 mt-0.5"></i>
+                        <span>Tiap unit dengan Kec&Desa diketahui akan diacak posisinya dalam SLS di desa tersebut.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check-circle text-indigo-500 mt-0.5"></i>
+                        <span>Jika hanya Kecamatan diketahui, akan dipilih Desa secara acak dalam kecamatan itu.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check-circle text-indigo-500 mt-0.5"></i>
+                        <span>Jika lokasi tidak diketahui, status akan diverifikasi tanpa titik koordinat.</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Riwayat & Rollback -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h3 class="text-lg font-semibold text-gray-800 border-b pb-3 mb-4"><i
+                    class="fas fa-history text-gray-500 mr-2"></i>Riwayat & Batal (Rollback)</h3>
+
+                            <div class="text-center py-8">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                        <i class="fas fa-folder-open text-2xl text-gray-400"></i>
+                    </div>
+                    <p class="text-gray-500 font-medium">Belum ada riwayat bulk update</p>
+                </div>
+                    </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadGeoJsonOptions();
+        });
+
+        let geoData = null;
+
+        async function loadGeoJsonOptions() {
+            try {
+                const res = await fetch("http://localhost:8001/data/sls_1504.geojson");
+                if (!res.ok) throw new Error('GeoJSON not found');
+                geoData = await res.json();
+
+                const kecMap = {};
+                geoData.features.forEach(f => {
+                    const p = f.properties;
+                    const kec = (p.kdkec || '').toString();
+                    if (kec && !kecMap[kec]) {
+                        kecMap[kec] = p.nmkec || `Kec ${kec}`;
+                    }
+                });
+
+                const kecSelect = document.getElementById('target_kec');
+                Object.entries(kecMap).sort((a,b) => a[0].localeCompare(b[0])).forEach(([code, name]) => {
+                    const opt = document.createElement('option');
+                    opt.value = code;
+                    opt.textContent = name;
+                    kecSelect.appendChild(opt);
+                });
+
+                kecSelect.addEventListener('change', function() {
+                    populateTargetDesa(this.value);
+                    document.getElementById('target_sls').innerHTML = '<option value="">-- Default (Acak) --</option>';
+                });
+
+                document.getElementById('target_desa').addEventListener('change', function() {
+                    populateTargetSls(document.getElementById('target_kec').value, this.value);
+                });
+
+            } catch (err) {
+                console.error("Failed to load geo parameters", err);
+            }
+        }
+
+        function populateTargetDesa(kecCode) {
+            const desaSelect = document.getElementById('target_desa');
+            desaSelect.innerHTML = '<option value="">-- Default Unit --</option>';
+            if (!kecCode || !geoData) return;
+
+            const desaMap = {};
+            geoData.features.forEach(f => {
+                const p = f.properties;
+                const normalizeKecCode = kecCode.toString().replace(/^0+/, ''); // Remove leading zeros if any
+                const featKec = (p.kdkec || '').toString().replace(/^0+/, '');
+                
+                if (featKec === normalizeKecCode || featKec === kecCode.toString()) {
+                    const desa = (p.kddesa || '').toString();
+                    if (desa && !desaMap[desa]) {
+                        desaMap[desa] = p.nmdesa || `Desa ${desa}`;
+                    }
+                }
+            });
+
+            Object.entries(desaMap).sort((a,b) => a[0].localeCompare(b[0])).forEach(([code, name]) => {
+                const opt = document.createElement('option');
+                // Format appropriately (keep 3 digits pad)
+                opt.value = code.padStart(3, '0');
+                opt.textContent = name;
+                desaSelect.appendChild(opt);
+            });
+        }
+
+        function populateTargetSls(kecCode, desaCode) {
+            const slsSelect = document.getElementById('target_sls');
+            slsSelect.innerHTML = '<option value="">-- Default (Acak) --</option>';
+            if (!kecCode || !desaCode || !geoData) return;
+
+            const slsMap = {};
+            geoData.features.forEach(f => {
+                const p = f.properties;
+                const featKec = (p.kdkec || '').toString().padStart(3, '0');
+                const featDesa = (p.kddesa || '').toString().padStart(3, '0');
+                
+                if (featKec === kecCode.toString().padStart(3, '0') &&
+                    featDesa === desaCode.toString().padStart(3, '0')) {
+                    const sls = (p.kdsls || '').toString();
+                    if (sls && !slsMap[sls]) {
+                        slsMap[sls] = p.nmsls || `SLS ${sls}`;
+                    }
+                }
+            });
+
+            Object.entries(slsMap).sort((a,b) => a[0].localeCompare(b[0])).forEach(([code, name]) => {
+                const opt = document.createElement('option');
+                opt.value = code;
+                opt.textContent = name;
+                slsSelect.appendChild(opt);
+            });
+        }
+
+        function confirmBulkUpdate() {
+            Swal.fire({
+                title: 'Mulai Bulk Update?',
+                text: "Proses ini akan mengupdate ribuan data secara otomatis. Pastikan Anda telah memeriksa rinciannya.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Mulai!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Sedang Memproses...',
+                        text: 'Harap tunggu, proses ini mungkin memakan waktu beberapa saat.',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
+                    });
+                    document.getElementById('form-bulk-update').submit();
+                }
+            })
+        }
+
+        function confirmRollback(form, batchId, count) {
+            Swal.fire({
+                title: 'Konfirmasi Rollback',
+                html: `Anda akan membatalkan update untuk batch <b>${batchId}</b> yang terdiri dari <b>${count}</b> unit data.<br><br>Gunakan opsi ini hanya jika hasil plot koordinat dirasa kurang pas. Data akan dikembalikan ke status 'PENDING'.`,
+                icon: 'error',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Kembalikan Data',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Sedang Memproses Rollback...',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
+                    });
+                    form.submit();
+                }
+            })
+        }
+    </script>
+    </div>
+</body>
+</html>

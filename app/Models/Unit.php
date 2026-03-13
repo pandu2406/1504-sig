@@ -19,6 +19,7 @@ class Unit extends Model
         'current_status',
         'status_keberadaan',
         'last_updated_by',
+        'first_updated_by',
         'raw_data'
     ];
 
